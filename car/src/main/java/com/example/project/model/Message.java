@@ -2,7 +2,13 @@ package com.example.project.model;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -32,4 +38,5 @@ public class Message implements Serializable {
 	public void setText(String text) {
 		this.text = text;
 	}
+
 }

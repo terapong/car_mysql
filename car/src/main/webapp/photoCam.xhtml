@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head> 
+<body> 
+	<h:form>
+		<p:panelGrid>
+			<p:row>
+				<p:column><p:photoCam widgetVar="pc" listener="#{photoCamView.oncapture}" update="photo" /></p:column>
+			</p:row>
+			<p:row>
+				<p:column><p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/></p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<p:outputPanel id="photo">
+	            <p:graphicImage value="images/motor.jpg"/>
+	        </p:outputPanel>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</h:form>
+</body> 
+</html>
+ 	

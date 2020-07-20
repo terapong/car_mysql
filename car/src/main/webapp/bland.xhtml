@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<p:panel header="ชื่อร้าน #{indexbean.shop.shopName}" closable="true">
+		<p:ajax event="close" listener="#{menubean.handleClose}"  update=":mainCenterForm"/>
+		<p:panelGrid style="width: 50%">
+			<p:row>
+				<p:column><h:outputText value="ชื่อร้าน: " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.shopName}</p:column>
+				<p:column><h:outputText value="หมายเลขทะเบียนการค้า: " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.businessRegistration}</p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputText value="ชื่อ(EN): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.ownerNameEN}</p:column>
+				<p:column><h:outputText value="นามสกุล(EN): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.ownerSurNameEN}</p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputText value="ชื่อ(TH): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.ownerNameTH}</p:column>
+				<p:column><h:outputText value="นามสกุล(TH): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.ownerSurNameTH}</p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputText value="ที่อยู่: " style="font-weight: bold;"/></p:column>
+				<p:column colspan="3">#{indexbean.shop.address}</p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputText value="เบอร์โทร(Office): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.phoneOffice}</p:column>
+				<p:column><h:outputText value="เบอร์โทร(Mobile): " style="font-weight: bold;"/></p:column>
+				<p:column>#{indexbean.shop.phoneMobile}</p:column>
+			</p:row>
+			<p:row>
+				<p:column><h:outputText value="เบอร์โทร(Fax): " style="font-weight: bold;"/></p:column>
+				<p:column colspan="3">#{indexbean.shop.phoneFax}</p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="4">
+					<p:dataTable var="r" value="#{blandbean.blands}" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+              currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+              rowsPerPageTemplate="5,10,15" >
+						<f:facet name="header">
+        			รายชื่อยี่ห้อรถ
+    				</f:facet>
+    				<p:column headerText="ID">
+							<h:outputText value="#{r.id}" />
+						</p:column>
+						<p:column headerText="ยี่ห้อ">
+							<h:outputText value="#{r.name}" />
+						</p:column>
+						<p:column>
+							<p:commandButton value="แก้ไข" actionListener="#{blandbean.btnEditClick(r)}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+						</p:column>
+						<p:column>
+							<p:commandButton value="ลบ" actionListener="#{blandbean.btnDeleteClick(r)}" oncomplete="PF('confirmDeleteCarDialog').show()" process="@this" resetValues="true"/>
+						</p:column>
+						<f:facet name="footer">
+        			<p:commandButton icon="ui-icon-plus" value="เพิ่มยี่ห้อ" actionListener="#{blandbean.btnNewClick}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+    				</f:facet>
+					</p:dataTable>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:panel>
+	
+	<p:confirmDialog message="คุณต้องการ ลบ ใช่หรือไม่ ?" closable="flase" header="ลบ" severity="alert" widgetVar="confirmDeleteCarDialog" appendTo="@(body)">  
+	  <p:commandButton value="ใช่" update=":mainCenterForm" onclick="PF('confirmDeleteCarDialog').hide()" actionListener="#{blandbean.confirmDeleteClick}" process="@this" ajax="true" icon="ui-icon-check"/>  
+	  <p:commandButton value="ไม่ใช่" onclick="PF('confirmDeleteCarDialog').hide()" type="button"  icon="ui-icon-closethick"/>   
+  </p:confirmDialog>
+	
+	<p:dialog id="newObjectDlg" header="ยี่ห้อ" widgetVar="newObjectDlg" modal="true" appendTo="@(body)" width="200px" height="80px" closable="true">
+    <p:panelGrid id="panelInput">
+    	<p:row>
+    		<p:column><h:outputText value="ยี่ห้อ: "/></p:column>
+    		<p:column><p:inputText value="#{blandbean.bland.name}" style="width: 90px" required="true"/></p:column>
+    	</p:row>
+    	<p:row>
+    		<p:column colspan="2" style="text-align: center">
+    			<p:commandButton value="บันทึก" icon="ui-icon-disk" actionListener="#{blandbean.btnSaveClick}" update=":mainCenterForm" process="@this panelInput" oncomplete="if (args.validationFailed) {PF('newObjectDlg').show(); } else {PF('newObjectDlg').hide(); }"/>
+					<p:commandButton value="ยกเลิก" icon="ui-icon-close" onclick="PF('newObjectDlg').hide()"/>
+    		</p:column>
+    	</p:row>
+    </p:panelGrid>
+	</p:dialog>
+	</ui:composition>
+</html>
