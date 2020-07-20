@@ -82,4 +82,12 @@ public class Model implements Serializable {
 	public void setBland(Bland bland) {
 		this.bland = bland;
 	}
+
+	public Shop getShop() {
+		return shop;
+	}
+
+	public void setShop(Shop shop) {
+		this.shop = shop;
+	}
 }
