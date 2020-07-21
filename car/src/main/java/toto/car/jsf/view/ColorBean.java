@@ -2,7 +2,6 @@ package toto.car.jsf.view;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -11,34 +10,41 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 
 import toto.car.ejb.entity.*;
+import toto.car.ejb.session.CarSession;
 
 @Named("colorbean")
-//@ViewScoped
-@ApplicationScoped
+@ViewScoped
 public class ColorBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(ColorBean.class);
+	
 
 	private String mode;
 	private Calendar cal;
 	
-	private ArrayList<Color> colors;
+	private List<Color> colors;
 	private Color selectedColor;
 	private Long selectColorID;
 	private Color color;
 	
+	private Shop shop;
+	
 	@Inject
 	private IndexBean indexBean;
+	
+	@Inject
+	private CarSession s;
 
 	@PostConstruct
 	private void init() {
 		logger.debug("init");
 		cal = Calendar.getInstance();
-		colors = setDummyColor();
+		//colors = setDummyColor();
+		shop = indexBean.getShop();
+		colors = s.getAllColorByShopId(shop.getId());
 	}
 	
 	@PreDestroy
@@ -46,40 +52,12 @@ public class ColorBean implements Serializable {
 		logger.debug("destroy");
 	}
 	
-	private ArrayList<Color> setDummyColor() {
-		ArrayList<Color> colors = new ArrayList<Color>();
-		Color c1 = new Color();
-		c1.setCreateDate(cal.getTime());
-		c1.setCreateUser("admin");
-		c1.setId(0L);
-		c1.setName("แดง");
-		c1.setUpdateDate(cal.getTime());
-		colors.add(c1);
-		
-		Color c2 = new Color();
-		c2.setCreateDate(cal.getTime());
-		c2.setCreateUser("admin");
-		c2.setId(1L);
-		c2.setName("ดำ");
-		c2.setUpdateDate(cal.getTime());
-		colors.add(c2);
-		
-		Color c3 = new Color();
-		c3.setCreateDate(cal.getTime());
-		c3.setCreateUser("admin");
-		c3.setId(2L);
-		c3.setName("น้ำเงิน");
-		c3.setUpdateDate(cal.getTime());
-		colors.add(c3);
-		
-		return colors;
-	}
-	
 	public void btnNewClick() {
 		color = new Color();
 		color.setCreateUser(indexBean.getUserName());
 		color.setCreateDate(cal.getTime());
 		color.setUpdateDate(cal.getTime());
+		color.setShop(shop);
 		mode = "insert";
 		logger.debug("btnNewClick");
 	}
@@ -93,12 +71,12 @@ public class ColorBean implements Serializable {
 	
 	public void btnSaveClick() {
 		if(mode.equals("insert")) {
-			color.setId(Long.valueOf(colors.size()));
-			colors.add(color);
+			s.insertColorByShopId(shop.getId(), color);
 		} else {
-			///save to database
+			s.updateColorByShopId(shop.getId(), color);
 		}
 		logger.debug("btnSaveClick");
+		init();
 	}
 	
 	public void btnDeleteClick(Color r) {
@@ -108,7 +86,8 @@ public class ColorBean implements Serializable {
 	
 	public void confirmDeleteClick() {
 		try {
-			colors.remove(selectedColor);
+			s.deleteColorByShopId(shop.getId(), selectedColor);
+			init();
 		} catch(Exception ex) {
 			FacesMessage msg = new FacesMessage();
 			msg.setSummary("ไม่สามารถ ลบ ได้");
@@ -116,14 +95,6 @@ public class ColorBean implements Serializable {
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-	}
-
-	public ArrayList<Color> getColors() {
-		return colors;
-	}
-
-	public void setColors(ArrayList<Color> colors) {
-		this.colors = colors;
 	}
 
 	public Color getSelectedColor() {
@@ -148,5 +119,13 @@ public class ColorBean implements Serializable {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public List<Color> getColors() {
+		return colors;
+	}
+
+	public void setColors(List<Color> colors) {
+		this.colors = colors;
 	}
 }

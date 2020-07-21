@@ -23,20 +23,10 @@ public class IndexBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(IndexBean.class);
 	
-//	private ArrayList<Role> roles;
-//	private Role selectedRole;
-//	private Long selectedRoleID;
-	
-//	private ArrayList<Employee> employees;
-//	private Employee selectedEmployee;
-//	private Long selectEmployeeID;
 	
 	private Shop shop;
-	
 	private User user;
-	
 	private String contentCenter = "customer.xhtml";
-	
 	private String userName;
 	private String password;
 	private Calendar cal;
@@ -56,6 +46,8 @@ public class IndexBean implements Serializable {
 		
 		user = setDummyUser();
 		shop = setDummyShop();
+		userName = "admin";
+		password = "ying2002p";
 	}
 	
 	@PreDestroy
@@ -81,7 +73,7 @@ public class IndexBean implements Serializable {
 		shop.setBusinessRegistration("123456789");
 		shop.setCreateDate(cal.getTime());
 		shop.setCreateUser("admin");
-		shop.setId(0L);
+		shop.setId(1L);
 		shop.setIdcard("3770600334048");
 		shop.setOwnerNameEN("Terapong");
 		shop.setOwnerNameTH("ธีระพงษ์");
